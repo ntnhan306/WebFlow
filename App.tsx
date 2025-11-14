@@ -71,25 +71,69 @@ const findAndUpdateBlock = (blocks: WorkspaceBlock[], instanceId: string, update
   });
 };
 
-const findAndAddBlock = (blocks: WorkspaceBlock[], newBlock: WorkspaceBlock, parentId: string): WorkspaceBlock[] => {
-  return blocks.map(block => {
-    if (block.instanceId === parentId) {
-      return { ...block, children: [...block.children, newBlock] };
-    }
-    if (block.children?.length > 0) {
-      return { ...block, children: findAndAddBlock(block.children, newBlock, parentId) };
-    }
-    return block;
-  });
-};
 
-const findAndRemoveBlock = (blocks: WorkspaceBlock[], instanceId: string): WorkspaceBlock[] => {
-    return blocks.filter(b => b.instanceId !== instanceId).map(block => {
+const findAndRemoveBlock = (blocks: WorkspaceBlock[], instanceId: string): { newBlocks: WorkspaceBlock[], removedBlock: WorkspaceBlock | null } => {
+    let removedBlock: WorkspaceBlock | null = null;
+    const newBlocks = blocks.filter(b => {
+        if (b.instanceId === instanceId) {
+            removedBlock = b;
+            return false;
+        }
+        return true;
+    }).map(block => {
         if (block.children?.length > 0) {
-            return { ...block, children: findAndRemoveBlock(block.children, instanceId) };
+            const result = findAndRemoveBlock(block.children, instanceId);
+            if (result.removedBlock) {
+                 removedBlock = result.removedBlock;
+            }
+            return { ...block, children: result.newBlocks };
         }
         return block;
     });
+    return { newBlocks, removedBlock };
+};
+
+const findAndInsertBlock = (
+    blocks: WorkspaceBlock[], 
+    blockToInsert: WorkspaceBlock, 
+    targetId: string, 
+    position: 'before' | 'after' | 'inside'
+): WorkspaceBlock[] => {
+    if (position === 'inside') {
+        return blocks.map(block => {
+            if (block.instanceId === targetId) {
+                return { ...block, children: [...block.children, blockToInsert] };
+            }
+            if (block.children?.length > 0) {
+                return { ...block, children: findAndInsertBlock(block.children, blockToInsert, targetId, position) };
+            }
+            return block;
+        });
+    }
+
+    const newBlocks: WorkspaceBlock[] = [];
+    let inserted = false;
+    for (const block of blocks) {
+        if (block.instanceId === targetId) {
+            if (position === 'before') {
+                newBlocks.push(blockToInsert);
+                newBlocks.push(block);
+            } else { // after
+                newBlocks.push(block);
+                newBlocks.push(blockToInsert);
+            }
+            inserted = true;
+        } else {
+            if (block.children?.length > 0) {
+                 const result = findAndInsertBlock(block.children, blockToInsert, targetId, position);
+                 if (result.length !== block.children.length) inserted = true;
+                 newBlocks.push({...block, children: result});
+            } else {
+                newBlocks.push(block);
+            }
+        }
+    }
+    return newBlocks;
 };
 
 const deepCloneBlock = (block: WorkspaceBlock): WorkspaceBlock => ({
@@ -101,13 +145,13 @@ const deepCloneBlock = (block: WorkspaceBlock): WorkspaceBlock => ({
 const findAndDuplicateBlock = (blocks: WorkspaceBlock[], instanceId: string): WorkspaceBlock[] => {
     const newBlocks: WorkspaceBlock[] = [];
     for (const block of blocks) {
+        newBlocks.push(block);
         if (block.instanceId === instanceId) {
-            newBlocks.push(block, deepCloneBlock(block));
+            newBlocks.push(deepCloneBlock(block));
         } else {
-             newBlocks.push({
-                ...block,
-                children: block.children?.length > 0 ? findAndDuplicateBlock(block.children, instanceId) : [],
-             });
+             if (block.children?.length > 0) {
+                block.children = findAndDuplicateBlock(block.children, instanceId);
+             }
         }
     }
     return newBlocks;
@@ -174,6 +218,13 @@ const generateJsCode = (rules: JsRule[]): string => {
     return finalCode;
 }
 
+interface DropData {
+    draggedId: string;
+    draggedType: 'new' | 'move';
+    targetId: string | null;
+    position: 'inside' | 'before' | 'after';
+}
+
 // --- MAIN APP COMPONENT ---
 const App: React.FC = () => {
   const [editorMode, setEditorMode] = useState<EditorMode>('html');
@@ -225,14 +276,36 @@ const App: React.FC = () => {
   }, []);
 
   // --- HTML Handlers ---
-  const handleDrop = useCallback((blockId: string, parentId: string | null) => {
-    const block = BLOCKS.find(b => b.id === blockId);
-    if (!block) return;
-    const newBlock = block.template(crypto.randomUUID());
+  const handleBlockDrop = useCallback((data: DropData) => {
+    const { draggedId, draggedType, targetId, position } = data;
+
     setWorkspaceBlocks(prevBlocks => {
-      const bodyInstanceId = prevBlocks[0]?.children?.find(c => c.blockId === 'body')?.instanceId;
-      return findAndAddBlock(prevBlocks, newBlock, parentId || bodyInstanceId || '');
+        let blockToMove: WorkspaceBlock | null = null;
+        let blocksAfterRemove: WorkspaceBlock[] = prevBlocks;
+        
+        if (draggedType === 'move') {
+            const { newBlocks, removedBlock } = findAndRemoveBlock(prevBlocks, draggedId);
+            if (!removedBlock) return prevBlocks; // Should not happen
+            blockToMove = removedBlock;
+            blocksAfterRemove = newBlocks;
+        } else { // 'new'
+            const blockDef = BLOCKS.find(b => b.id === draggedId);
+            if (!blockDef) return prevBlocks;
+            blockToMove = blockDef.template(crypto.randomUUID());
+        }
+
+        if (!blockToMove) return prevBlocks;
+
+        const bodyInstanceId = prevBlocks[0]?.children?.find(c => c.blockId === 'body')?.instanceId;
+        const finalTargetId = targetId || bodyInstanceId;
+
+        if (!finalTargetId) {
+           return [...blocksAfterRemove, blockToMove];
+        }
+
+        return findAndInsertBlock(blocksAfterRemove, blockToMove, finalTargetId, position);
     });
+
   }, []);
   
   const handleUpdateBlock = useCallback((instanceId: string, updates: Partial<WorkspaceBlock>) => {
@@ -257,7 +330,7 @@ const App: React.FC = () => {
 
   const handleDeleteBlock = () => {
     if (!contextMenu.instanceId) return;
-    setWorkspaceBlocks(prev => findAndRemoveBlock(prev, contextMenu.instanceId!));
+    setWorkspaceBlocks(prev => findAndRemoveBlock(prev, contextMenu.instanceId!).newBlocks);
     if (selectedBlock?.instanceId === contextMenu.instanceId) setSelectedBlock(null);
     closeContextMenu();
   };
@@ -290,7 +363,7 @@ const App: React.FC = () => {
             <BlockPalette />
             <Workspace 
               blocks={workspaceBlocks} 
-              onDrop={handleDrop} 
+              onBlockDrop={handleBlockDrop} 
               onUpdateBlock={handleUpdateBlock}
               selectedBlock={selectedBlock}
               setSelectedBlock={setSelectedBlock}
