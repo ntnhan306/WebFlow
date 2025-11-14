@@ -1,15 +1,8 @@
 import React from 'react';
-import type { CssRule, CssProperty } from '../../types';
 
-interface CssPropertiesPanelProps {
-    selectedRule: CssRule | null;
-    selectedProperty: CssProperty | null;
-    setRules: React.Dispatch<React.SetStateAction<CssRule[]>>;
-}
+const CssPropertiesPanel = ({ selectedRule, selectedProperty, setRules }) => {
 
-const CssPropertiesPanel: React.FC<CssPropertiesPanelProps> = ({ selectedRule, selectedProperty, setRules }) => {
-
-    const handleValueChange = (newValue: string) => {
+    const handleValueChange = (newValue) => {
         if (!selectedRule || !selectedProperty) return;
 
         setRules(prevRules => prevRules.map(rule => {

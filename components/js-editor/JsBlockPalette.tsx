@@ -1,10 +1,9 @@
 import React from 'react';
-import { JS_BLOCKS } from '../../js-constants';
-import type { JsBlock } from '../../types';
-import { JsBlockCategory } from '../../types';
+import { JS_BLOCKS } from '../../js-constants.js';
+import { JsBlockCategory } from '../../enums.js';
 
-const DraggableJsBlock: React.FC<{ block: JsBlock }> = ({ block }) => {
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+const DraggableJsBlock = ({ block }) => {
+  const handleDragStart = (e) => {
     e.dataTransfer.setData('jsBlockId', block.id);
   };
 
@@ -19,14 +18,14 @@ const DraggableJsBlock: React.FC<{ block: JsBlock }> = ({ block }) => {
   );
 };
 
-const JsBlockPalette: React.FC = () => {
+const JsBlockPalette = () => {
   const groupedBlocks = JS_BLOCKS.reduce((acc, block) => {
     if (!acc[block.category]) {
       acc[block.category] = [];
     }
     acc[block.category].push(block);
     return acc;
-  }, {} as Record<JsBlockCategory, JsBlock[]>);
+  }, {});
 
   const categoryOrder = Object.values(JsBlockCategory);
 

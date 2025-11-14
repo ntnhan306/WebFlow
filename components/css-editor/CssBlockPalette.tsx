@@ -1,10 +1,9 @@
 import React from 'react';
-import { CSS_BLOCKS } from '../../css-constants';
-import type { CssBlock } from '../../types';
-import { CssBlockCategory } from '../../types';
+import { CSS_BLOCKS } from '../../css-constants.js';
+import { CssBlockCategory } from '../../enums.js';
 
-const DraggableCssBlock: React.FC<{ block: CssBlock }> = ({ block }) => {
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+const DraggableCssBlock = ({ block }) => {
+  const handleDragStart = (e) => {
     e.dataTransfer.setData('cssBlockId', block.id);
   };
 
@@ -19,14 +18,14 @@ const DraggableCssBlock: React.FC<{ block: CssBlock }> = ({ block }) => {
   );
 };
 
-const CssBlockPalette: React.FC = () => {
+const CssBlockPalette = () => {
   const groupedBlocks = CSS_BLOCKS.reduce((acc, block) => {
     if (!acc[block.category]) {
       acc[block.category] = [];
     }
     acc[block.category].push(block);
     return acc;
-  }, {} as Record<CssBlockCategory, CssBlock[]>);
+  }, {});
 
   const categoryOrder = Object.values(CssBlockCategory);
 

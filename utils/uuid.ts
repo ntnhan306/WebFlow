@@ -3,7 +3,7 @@
  * Prefers the built-in `crypto.randomUUID()` if available in a secure context.
  * Falls back to a simple random string implementation for non-secure contexts (like file://).
  */
-export const generateUUID = (): string => {
+export const generateUUID = () => {
     if (crypto && crypto.randomUUID) {
         return crypto.randomUUID();
     }

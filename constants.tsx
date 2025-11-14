@@ -1,9 +1,7 @@
 import React from 'react';
-import type { Block, WorkspaceBlock } from './types';
-import { BlockCategory, BlockType } from './types';
-import type { CSSProperties } from 'react';
+import { BlockCategory, BlockType } from './enums.js';
 
-const escapeHtml = (unsafe: string) => {
+const escapeHtml = (unsafe) => {
   if (typeof unsafe !== 'string') {
     return '';
   }
@@ -15,8 +13,8 @@ const escapeHtml = (unsafe: string) => {
     .replace(/'/g, "&#039;");
 };
 
-const generateFullAttributesString = (block: WorkspaceBlock): string => {
-    const attrs: string[] = [];
+const generateFullAttributesString = (block) => {
+    const attrs = [];
 
     // HTML Attributes
     for (const [key, value] of Object.entries(block.attributes)) {
@@ -48,7 +46,7 @@ const generateFullAttributesString = (block: WorkspaceBlock): string => {
 
 // --- Block Definitions ---
 
-export const BLOCKS: Block[] = [
+export const BLOCKS = [
   // DOCUMENT BLOCKS
   {
     id: 'html',
@@ -61,7 +59,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal text-gray-500">html</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'html',
       name: 'Tài liệu HTML',
@@ -87,7 +85,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal text-gray-500">head</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'head',
       name: 'Phần Head',
@@ -113,7 +111,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal text-gray-500">body</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'body',
       name: 'Phần Body',
@@ -139,7 +137,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal text-gray-500">title</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'title',
       name: 'Tiêu đề',
@@ -166,7 +164,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">style</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'style',
       name: 'CSS Styles',
@@ -192,7 +190,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">script</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'script',
       name: 'JavaScript',
@@ -220,7 +218,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">div</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'div',
       name: 'Khối (div)',
@@ -246,7 +244,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">header</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'header',
       name: 'Đầu trang (header)',
@@ -272,7 +270,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">footer</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'footer',
       name: 'Chân trang (footer)',
@@ -298,7 +296,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">main</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'main',
       name: 'Nội dung chính (main)',
@@ -324,7 +322,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">section</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'section',
       name: 'Khu vực (section)',
@@ -350,7 +348,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">article</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'article',
       name: 'Bài viết (article)',
@@ -376,7 +374,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">aside</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'aside',
       name: 'Nội dung phụ (aside)',
@@ -404,7 +402,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">h1</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'h1',
       name: 'Tiêu đề 1',
@@ -429,7 +427,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">h2</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'h2',
       name: 'Tiêu đề 2',
@@ -454,7 +452,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">h3</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'h3',
       name: 'Tiêu đề 3',
@@ -479,7 +477,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">p</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'p',
       name: 'Đoạn văn',
@@ -504,7 +502,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">span</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'span',
       name: 'Khối nội dòng (span)',
@@ -529,7 +527,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">strong</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'strong',
       name: 'In đậm',
@@ -554,7 +552,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">em</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'em',
       name: 'In nghiêng',
@@ -579,7 +577,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">blockquote</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'blockquote',
       name: 'Trích dẫn',
@@ -605,7 +603,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">hr</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'hr',
       name: 'Đường kẻ ngang',
@@ -632,7 +630,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">a</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'a',
       name: 'Liên kết',
@@ -658,7 +656,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">img</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'img',
       name: 'Hình ảnh',
@@ -683,7 +681,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">video</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'video',
       name: 'Video',
@@ -708,7 +706,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">audio</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'audio',
       name: 'Audio',
@@ -734,7 +732,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">form</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'form',
       name: 'Biểu mẫu (form)',
@@ -760,7 +758,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">label</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'label',
       name: 'Nhãn (label)',
@@ -785,7 +783,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">button</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'button',
       name: 'Nút bấm',
@@ -810,7 +808,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">input</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'input',
       name: 'Ô nhập liệu',
@@ -835,7 +833,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">textarea</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'textarea',
       name: 'Vùng văn bản',
@@ -860,7 +858,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">fieldset</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'fieldset',
       name: 'Nhóm trường (fieldset)',
@@ -886,7 +884,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">legend</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'legend',
       name: 'Tiêu đề nhóm (legend)',
@@ -912,7 +910,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">ul</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'ul',
       name: 'Danh sách (không thứ tự)',
@@ -938,7 +936,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">ol</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'ol',
       name: 'Danh sách (có thứ tự)',
@@ -964,7 +962,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">li</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'li',
       name: 'Mục trong danh sách',
@@ -990,7 +988,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">table</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'table',
       name: 'Bảng',
@@ -1016,7 +1014,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">thead</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'thead',
       name: 'Đầu bảng',
@@ -1042,7 +1040,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">tbody</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'tbody',
       name: 'Thân bảng',
@@ -1068,7 +1066,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">tr</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'tr',
       name: 'Hàng',
@@ -1094,7 +1092,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">th</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'th',
       name: 'Ô tiêu đề',
@@ -1119,7 +1117,7 @@ export const BLOCKS: Block[] = [
         <div className="text-xs font-normal opacity-70">td</div>
       </div>
     ),
-    template: (instanceId: string): WorkspaceBlock => ({
+    template: (instanceId) => ({
       instanceId,
       blockId: 'td',
       name: 'Ô dữ liệu',

@@ -1,14 +1,13 @@
-import type { JsBlock, JsAction } from './types';
-import { JsBlockCategory } from './types';
-import { generateUUID } from './utils/uuid';
+import { JsBlockCategory } from './enums.js';
+import { generateUUID } from './utils/uuid.js';
 
-export const JS_BLOCKS: JsBlock[] = [
+export const JS_BLOCKS = [
     // ACTIONS
     {
         id: 'alert',
         name: 'Hiển thị Cảnh báo',
         category: JsBlockCategory.ACTIONS,
-        template: (): JsAction => ({
+        template: () => ({
             instanceId: generateUUID(),
             actionId: 'alert',
             params: { message: 'Xin chào!' },
@@ -18,7 +17,7 @@ export const JS_BLOCKS: JsBlock[] = [
         id: 'console.log',
         name: 'Ghi ra Console',
         category: JsBlockCategory.ACTIONS,
-        template: (): JsAction => ({
+        template: () => ({
             instanceId: generateUUID(),
             actionId: 'console.log',
             params: { message: 'Dữ liệu log' },

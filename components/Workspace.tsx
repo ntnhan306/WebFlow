@@ -1,41 +1,14 @@
 import React, { useState } from 'react';
-import type { WorkspaceBlock } from '../types';
-import { BLOCKS } from '../constants';
-import { BlockType } from '../types';
+import { BLOCKS } from '../constants.jsx';
+import { BlockType } from '../enums.js';
 
-interface DropData {
-    draggedId: string; // blockId from palette OR instanceId from workspace
-    draggedType: 'new' | 'move';
-    targetId: string | null;
-    position: 'inside' | 'before' | 'after';
-}
-
-interface WorkspaceProps {
-  blocks: WorkspaceBlock[];
-  onBlockDrop: (data: DropData) => void;
-  onUpdateBlock: (instanceId:string, updates: Partial<WorkspaceBlock>) => void;
-  selectedBlock: WorkspaceBlock | null;
-  setSelectedBlock: (block: WorkspaceBlock | null) => void;
-  onContextMenu: (event: React.MouseEvent, instanceId: string) => void;
-}
-
-interface WorkspaceItemProps {
-  block: WorkspaceBlock;
-  onBlockDrop: (data: DropData) => void;
-  onUpdateBlock: (instanceId:string, updates: Partial<WorkspaceBlock>) => void;
-  selectedBlock: WorkspaceBlock | null;
-  setSelectedBlock: (block: WorkspaceBlock | null) => void;
-  onContextMenu: (event: React.MouseEvent, instanceId: string) => void;
-}
-
-
-const DropIndicator: React.FC<{ onDrop: () => void }> = ({ onDrop }) => {
+const DropIndicator = ({ onDrop }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        onDrop();
+        onDrop(e);
         setIsDragOver(false);
     }
 
@@ -50,16 +23,13 @@ const DropIndicator: React.FC<{ onDrop: () => void }> = ({ onDrop }) => {
 }
 
 
-const WorkspaceItem: React.FC<WorkspaceItemProps> = ({ block, ...props }) => {
+const WorkspaceItem = ({ block, ...props }) => {
   const [isDragOverContainer, setIsDragOverContainer] = useState(false);
   const blockDef = BLOCKS.find(b => b.id === block.blockId);
   const isContainer = blockDef?.type === BlockType.CONTAINER;
   const hasContent = block.content && !isContainer;
 
-
-  // FIX: Updated function signature to accept a more generic event type to support both native DragEvent and React.DragEvent.
-  // This resolves the type error when using `window.event`. Also added null-safety checks.
-  const getDraggedData = (e: { dataTransfer: DataTransfer | null }): { id: string; type: 'new' | 'move' } => {
+  const getDraggedData = (e) => {
       const draggedInstanceId = e.dataTransfer?.getData('draggedInstanceId');
       if (draggedInstanceId) {
           return { id: draggedInstanceId, type: 'move' };
@@ -67,7 +37,7 @@ const WorkspaceItem: React.FC<WorkspaceItemProps> = ({ block, ...props }) => {
       return { id: e.dataTransfer?.getData('blockId') || '', type: 'new' };
   }
 
-  const handleDrop = (position: DropData['position']) => (e: React.DragEvent) => {
+  const handleDrop = (position) => (e) => {
       e.stopPropagation();
       e.preventDefault();
       const { id, type } = getDraggedData(e);
@@ -82,12 +52,12 @@ const WorkspaceItem: React.FC<WorkspaceItemProps> = ({ block, ...props }) => {
       setIsDragOverContainer(false);
   };
   
-  const handleDragStart = (e: React.DragEvent) => {
+  const handleDragStart = (e) => {
     e.stopPropagation();
     e.dataTransfer.setData('draggedInstanceId', block.instanceId);
   }
 
-  const handleSelect = (e: React.MouseEvent) => {
+  const handleSelect = (e) => {
     e.stopPropagation();
     props.setSelectedBlock(block);
   }
@@ -96,10 +66,7 @@ const WorkspaceItem: React.FC<WorkspaceItemProps> = ({ block, ...props }) => {
 
   return (
     <div>
-        {/* FIX: Correctly construct the DropData object passed to onBlockDrop. */}
-        {/* This resolves the error about missing 'draggedId' and 'draggedType' properties. */}
-        <DropIndicator onDrop={() => {
-            const e = window.event as unknown as DragEvent;
+        <DropIndicator onDrop={(e) => {
             const { id, type } = getDraggedData(e);
             if (id) {
                 props.onBlockDrop({
@@ -143,11 +110,10 @@ const WorkspaceItem: React.FC<WorkspaceItemProps> = ({ block, ...props }) => {
 };
 
 
-const Workspace: React.FC<WorkspaceProps> = ({ blocks, onBlockDrop, onUpdateBlock, selectedBlock, setSelectedBlock, onContextMenu }) => {
+const Workspace = ({ blocks, onBlockDrop, onUpdateBlock, selectedBlock, setSelectedBlock, onContextMenu }) => {
   const [isDragOver, setIsDragOver] = useState(false);
 
-  // This function is defined inside WorkspaceItem, but let's define it here for use in this component too.
-  const getDraggedData = (e: { dataTransfer: DataTransfer | null }): { id: string; type: 'new' | 'move' } => {
+  const getDraggedData = (e) => {
     const draggedInstanceId = e.dataTransfer?.getData('draggedInstanceId');
     if (draggedInstanceId) {
         return { id: draggedInstanceId, type: 'move' };
@@ -155,11 +121,11 @@ const Workspace: React.FC<WorkspaceProps> = ({ blocks, onBlockDrop, onUpdateBloc
     return { id: e.dataTransfer?.getData('blockId') || '', type: 'new' };
   }
   
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e) => {
     e.preventDefault();
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e) => {
     e.preventDefault();
     const { id, type } = getDraggedData(e);
     if (id) {
@@ -197,8 +163,7 @@ const Workspace: React.FC<WorkspaceProps> = ({ blocks, onBlockDrop, onUpdateBloc
               onContextMenu={onContextMenu}
             />
           ))}
-          <DropIndicator onDrop={() => {
-              const e = window.event as unknown as DragEvent;
+          <DropIndicator onDrop={(e) => {
               const { id, type } = getDraggedData(e);
                if (id) {
                 onBlockDrop({ draggedId: id, draggedType: type, targetId: null, position: 'inside' });

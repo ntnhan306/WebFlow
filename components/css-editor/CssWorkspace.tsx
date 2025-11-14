@@ -1,26 +1,16 @@
 import React, { useState } from 'react';
-import type { CssRule, CssProperty } from '../../types';
-import { CSS_BLOCKS } from '../../css-constants';
-import { generateUUID } from '../../utils/uuid';
+import { CSS_BLOCKS } from '../../css-constants.js';
+import { generateUUID } from '../../utils/uuid.js';
 
-interface CssWorkspaceProps {
-    rules: CssRule[];
-    setRules: React.Dispatch<React.SetStateAction<CssRule[]>>;
-    availableSelectors: string[];
-    selectedRule: CssRule | null;
-    setSelectedRule: (rule: CssRule | null) => void;
-    setSelectedProperty: (prop: CssProperty | null) => void;
-}
-
-const CssWorkspace: React.FC<CssWorkspaceProps> = ({ 
+const CssWorkspace = ({ 
     rules, setRules, availableSelectors, selectedRule, setSelectedRule, setSelectedProperty 
 }) => {
     const [newSelector, setNewSelector] = useState('');
-    const [isDragOver, setIsDragOver] = useState<string | null>(null);
+    const [isDragOver, setIsDragOver] = useState(null);
 
     const handleAddRule = () => {
         if (newSelector && !rules.find(r => r.selector === newSelector)) {
-            const newRule: CssRule = {
+            const newRule = {
                 instanceId: generateUUID(),
                 selector: newSelector,
                 properties: [],
@@ -30,7 +20,7 @@ const CssWorkspace: React.FC<CssWorkspaceProps> = ({
         }
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>, ruleId: string) => {
+    const handleDrop = (e, ruleId) => {
         e.preventDefault();
         const cssBlockId = e.dataTransfer.getData('cssBlockId');
         const block = CSS_BLOCKS.find(b => b.id === cssBlockId);

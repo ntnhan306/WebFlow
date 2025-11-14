@@ -1,39 +1,26 @@
 import React, { useState } from 'react';
-import type { WorkspaceBlock } from '../types';
-import type { CSSProperties } from 'react';
 
-interface RightPanelProps {
-  htmlContent: string;
-  selectedBlock: WorkspaceBlock | null;
-  onUpdateBlock: (instanceId: string, updates: Partial<WorkspaceBlock>) => void;
-}
-
-type Tab = 'Thuộc tính' | 'Xem trước' | 'Mã nguồn';
-
-const AttributeEditor: React.FC<{
-    selectedBlock: WorkspaceBlock,
-    onUpdateBlock: (instanceId: string, updates: Partial<WorkspaceBlock>) => void;
-}> = ({ selectedBlock, onUpdateBlock }) => {
+const AttributeEditor = ({ selectedBlock, onUpdateBlock }) => {
     
-    const handleAttributeChange = (key: string, value: string) => {
+    const handleAttributeChange = (key, value) => {
         onUpdateBlock(selectedBlock.instanceId, {
             attributes: { ...selectedBlock.attributes, [key]: value }
         });
     };
     
-    const handleStyleChange = (key: keyof CSSProperties, value: string) => {
+    const handleStyleChange = (key, value) => {
         onUpdateBlock(selectedBlock.instanceId, {
             styles: { ...selectedBlock.styles, [key]: value }
         });
     };
 
-    const handleEventChange = (key: string, value: string) => {
+    const handleEventChange = (key, value) => {
         onUpdateBlock(selectedBlock.instanceId, {
             events: { ...selectedBlock.events, [key]: value }
         });
     }
     
-    const handleContentChange = (value: string) => {
+    const handleContentChange = (value) => {
         onUpdateBlock(selectedBlock.instanceId, { content: value });
     }
 
@@ -68,7 +55,8 @@ const AttributeEditor: React.FC<{
                         <label className="font-medium text-gray-600 block mb-1 capitalize">{key}</label>
                         <input
                             type="text"
-                            value={value}
+                            // FIX: Ensure value is a string to prevent type errors.
+                            value={String(value)}
                             onChange={(e) => handleAttributeChange(key, e.target.value)}
                             className="w-full bg-gray-100 border border-gray-300 rounded-md p-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         />
@@ -109,7 +97,8 @@ const AttributeEditor: React.FC<{
                         <div key={key}>
                             <label className="font-medium text-gray-600 block mb-1 capitalize">{key}</label>
                              <textarea
-                                value={value}
+                                // FIX: Ensure value is a string to prevent type errors.
+                                value={String(value)}
                                 onChange={(e) => handleEventChange(key, e.target.value)}
                                 rows={2}
                                 placeholder={`alert('Sự kiện: ${key}')`}
@@ -124,14 +113,14 @@ const AttributeEditor: React.FC<{
     );
 };
 
-const RightPanel: React.FC<RightPanelProps> = ({ htmlContent, selectedBlock, onUpdateBlock }) => {
-  const [activeTab, setActiveTab] = useState<Tab>('Xem trước');
+const RightPanel = ({ htmlContent, selectedBlock, onUpdateBlock }) => {
+  const [activeTab, setActiveTab] = useState('Xem trước');
 
   return (
     <div className="w-1/3 bg-white flex flex-col border-l border-gray-200">
       <div className="flex-shrink-0 border-b border-gray-200">
           <nav className="flex space-x-2 p-2">
-            {(['Thuộc tính', 'Xem trước', 'Mã nguồn'] as Tab[]).map(tab => (
+            {['Thuộc tính', 'Xem trước', 'Mã nguồn'].map(tab => (
               <button 
                 key={tab}
                 disabled={tab === 'Thuộc tính' && !selectedBlock}

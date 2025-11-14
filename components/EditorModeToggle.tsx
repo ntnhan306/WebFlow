@@ -1,14 +1,8 @@
 import React from 'react';
-import type { EditorMode } from '../types';
 
-interface EditorModeToggleProps {
-  mode: EditorMode;
-  setMode: (mode: EditorMode) => void;
-}
-
-const EditorModeToggle: React.FC<EditorModeToggleProps> = ({ mode, setMode }) => {
-  const modes: EditorMode[] = ['html', 'css', 'js'];
-  const modeNames: Record<EditorMode, string> = {
+const EditorModeToggle = ({ mode, setMode }) => {
+  const modes = ['html', 'css', 'js'];
+  const modeNames = {
     html: 'HTML',
     css: 'CSS',
     js: 'JS',

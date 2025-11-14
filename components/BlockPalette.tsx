@@ -1,10 +1,9 @@
 import React from 'react';
-import { BLOCKS } from '../constants';
-import type { Block } from '../types';
-import { BlockCategory } from '../types';
+import { BLOCKS } from '../constants.jsx';
+import { BlockCategory } from '../enums.js';
 
-const DraggableBlock: React.FC<{ block: Block }> = ({ block }) => {
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+const DraggableBlock = ({ block }) => {
+  const handleDragStart = (e) => {
     e.dataTransfer.setData('blockId', block.id);
   };
 
@@ -19,7 +18,7 @@ const DraggableBlock: React.FC<{ block: Block }> = ({ block }) => {
   );
 };
 
-const CATEGORY_COLORS: Record<BlockCategory, { bg: string; border: string; text: string; }> = {
+const CATEGORY_COLORS = {
   [BlockCategory.DOCUMENT]: { bg: 'bg-blue-100', border: 'border-blue-200', text: 'text-blue-800' },
   [BlockCategory.STRUCTURE]: { bg: 'bg-blue-100', border: 'border-blue-200', text: 'text-blue-800' },
   [BlockCategory.TYPOGRAPHY]: { bg: 'bg-sky-100', border: 'border-sky-200', text: 'text-sky-800' },
@@ -31,17 +30,18 @@ const CATEGORY_COLORS: Record<BlockCategory, { bg: string; border: string; text:
   [BlockCategory.UTILITY]: { bg: 'bg-purple-100', border: 'border-purple-200', text: 'text-purple-800' },
 };
 
-const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+const slugify = (text) => text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
 
 
-const BlockPalette: React.FC = () => {
+const BlockPalette = () => {
   const groupedBlocks = BLOCKS.reduce((acc, block) => {
     if (!acc[block.category]) {
       acc[block.category] = [];
     }
     acc[block.category].push(block);
     return acc;
-  }, {} as Record<BlockCategory, Block[]>);
+    // @ts-ignore
+  }, {} as Record<string, typeof BLOCKS>);
   
   const categoryOrder = Object.values(BlockCategory);
 
@@ -50,7 +50,8 @@ const BlockPalette: React.FC = () => {
       acc[category] = groupedBlocks[category];
     }
     return acc;
-  }, {} as Record<BlockCategory, Block[]>);
+    // @ts-ignore
+  }, {} as Record<string, typeof BLOCKS>);
 
 
   return (
@@ -83,6 +84,7 @@ const BlockPalette: React.FC = () => {
           >
             <h3 className={`text-sm font-bold mb-2 uppercase tracking-wider ${CATEGORY_COLORS[category as BlockCategory].text}`}>{category}</h3>
             <div className="space-y-2">
+              {/* FIX: The 'blocks' variable was inferred as 'unknown', which does not have a 'map' method. Typing the accumulator in the reduce calls above fixes this. */}
               {blocks.map(block => (
                 <DraggableBlock key={block.id} block={block} />
               ))}

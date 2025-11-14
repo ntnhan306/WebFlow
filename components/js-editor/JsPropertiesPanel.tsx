@@ -1,18 +1,11 @@
 import React from 'react';
-import type { JsRule, JsAction } from '../../types';
-import { JS_BLOCKS } from '../../js-constants';
+import { JS_BLOCKS } from '../../js-constants.js';
 
-interface JsPropertiesPanelProps {
-    selectedRule: JsRule | null;
-    selectedAction: JsAction | null;
-    setRules: React.Dispatch<React.SetStateAction<JsRule[]>>;
-}
-
-const JsPropertiesPanel: React.FC<JsPropertiesPanelProps> = ({ selectedRule, selectedAction, setRules }) => {
+const JsPropertiesPanel = ({ selectedRule, selectedAction, setRules }) => {
     
     const blockDef = selectedAction ? JS_BLOCKS.find(b => b.id === selectedAction.actionId) : null;
 
-    const handleParamChange = (key: string, value: any) => {
+    const handleParamChange = (key, value) => {
         if (!selectedRule || !selectedAction) return;
 
         setRules(prevRules => prevRules.map(rule => {

@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
-import type { JsRule, JsAction } from '../../types';
-import { JS_BLOCKS } from '../../js-constants';
-import { generateUUID } from '../../utils/uuid';
+import { JS_BLOCKS } from '../../js-constants.js';
+import { generateUUID } from '../../utils/uuid.js';
 
-interface JsWorkspaceProps {
-    rules: JsRule[];
-    setRules: React.Dispatch<React.SetStateAction<JsRule[]>>;
-    availableSelectors: string[];
-    selectedRule: JsRule | null;
-    setSelectedRule: (rule: JsRule | null) => void;
-    setSelectedAction: (action: JsAction | null) => void;
-}
-
-const JsWorkspace: React.FC<JsWorkspaceProps> = ({ 
+const JsWorkspace = ({ 
     rules, setRules, availableSelectors, selectedRule, setSelectedRule, setSelectedAction 
 }) => {
     const [newSelector, setNewSelector] = useState('');
-    const [newEvent, setNewEvent] = useState<JsRule['event']>('click');
-    const [isDragOver, setIsDragOver] = useState<string | null>(null);
+    const [newEvent, setNewEvent] = useState('click');
+    const [isDragOver, setIsDragOver] = useState(null);
 
     const handleAddRule = () => {
         if (newSelector) {
-            const newRule: JsRule = {
+            const newRule = {
                 instanceId: generateUUID(),
                 selector: newSelector,
                 event: newEvent,
@@ -32,7 +22,7 @@ const JsWorkspace: React.FC<JsWorkspaceProps> = ({
         }
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>, ruleId: string) => {
+    const handleDrop = (e, ruleId) => {
         e.preventDefault();
         const jsBlockId = e.dataTransfer.getData('jsBlockId');
         const block = JS_BLOCKS.find(b => b.id === jsBlockId);
@@ -64,7 +54,7 @@ const JsWorkspace: React.FC<JsWorkspaceProps> = ({
                 <label className="font-semibold">bị</label>
                  <select 
                     value={newEvent} 
-                    onChange={e => setNewEvent(e.target.value as JsRule['event'])}
+                    onChange={e => setNewEvent(e.target.value)}
                     className="p-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 >
                     <option value="click">click</option>

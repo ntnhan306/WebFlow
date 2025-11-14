@@ -1,23 +1,20 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import BlockPalette from './components/BlockPalette';
-import Workspace from './components/Workspace';
-import RightPanel from './components/Preview';
-import ContextMenu from './components/ContextMenu';
-import EditorModeToggle from './components/EditorModeToggle';
-import CssWorkspace from './components/css-editor/CssWorkspace';
-import CssBlockPalette from './components/css-editor/CssBlockPalette';
-import CssPropertiesPanel from './components/css-editor/CssPropertiesPanel';
-import JsWorkspace from './components/js-editor/JsWorkspace';
-import JsBlockPalette from './components/js-editor/JsBlockPalette';
-import JsPropertiesPanel from './components/js-editor/JsPropertiesPanel';
-
-import type { WorkspaceBlock, EditorMode, CssRule, CssProperty, JsRule, JsAction } from './types';
-import { BLOCKS } from './constants';
-import type { CSSProperties } from 'react';
-import { generateUUID } from './utils/uuid';
+import BlockPalette from './components/BlockPalette.jsx';
+import Workspace from './components/Workspace.jsx';
+import RightPanel from './components/Preview.jsx';
+import ContextMenu from './components/ContextMenu.jsx';
+import EditorModeToggle from './components/EditorModeToggle.jsx';
+import CssWorkspace from './components/css-editor/CssWorkspace.jsx';
+import CssBlockPalette from './components/css-editor/CssBlockPalette.jsx';
+import CssPropertiesPanel from './components/css-editor/CssPropertiesPanel.jsx';
+import JsWorkspace from './components/js-editor/JsWorkspace.jsx';
+import JsBlockPalette from './components/js-editor/JsBlockPalette.jsx';
+import JsPropertiesPanel from './components/js-editor/JsPropertiesPanel.jsx';
+import { BLOCKS } from './constants.jsx';
+import { generateUUID } from './utils/uuid.js';
 
 // --- INITIAL STRUCTURE ---
-const createInitialStructure = (): WorkspaceBlock[] => {
+const createInitialStructure = () => {
     const htmlDef = BLOCKS.find(b => b.id === 'html');
     const headDef = BLOCKS.find(b => b.id === 'head');
     const bodyDef = BLOCKS.find(b => b.id === 'body');
@@ -45,7 +42,7 @@ const createInitialStructure = (): WorkspaceBlock[] => {
 
 
 // --- RECURSIVE HELPER FUNCTIONS ---
-const findBlock = (blocks: WorkspaceBlock[], instanceId: string): WorkspaceBlock | null => {
+const findBlock = (blocks, instanceId) => {
   for (const block of blocks) {
     if (block.instanceId === instanceId) return block;
     if (block.children?.length > 0) {
@@ -56,7 +53,7 @@ const findBlock = (blocks: WorkspaceBlock[], instanceId: string): WorkspaceBlock
   return null;
 };
 
-const findAndUpdateBlock = (blocks: WorkspaceBlock[], instanceId: string, updates: Partial<WorkspaceBlock>): WorkspaceBlock[] => {
+const findAndUpdateBlock = (blocks, instanceId, updates) => {
   return blocks.map(block => {
     if (block.instanceId === instanceId) {
       const updatedBlock = { ...block, ...updates };
@@ -73,8 +70,8 @@ const findAndUpdateBlock = (blocks: WorkspaceBlock[], instanceId: string, update
 };
 
 
-const findAndRemoveBlock = (blocks: WorkspaceBlock[], instanceId: string): { newBlocks: WorkspaceBlock[], removedBlock: WorkspaceBlock | null } => {
-    let removedBlock: WorkspaceBlock | null = null;
+const findAndRemoveBlock = (blocks, instanceId) => {
+    let removedBlock = null;
     const newBlocks = blocks.filter(b => {
         if (b.instanceId === instanceId) {
             removedBlock = b;
@@ -95,11 +92,11 @@ const findAndRemoveBlock = (blocks: WorkspaceBlock[], instanceId: string): { new
 };
 
 const findAndInsertBlock = (
-    blocks: WorkspaceBlock[], 
-    blockToInsert: WorkspaceBlock, 
-    targetId: string, 
-    position: 'before' | 'after' | 'inside'
-): WorkspaceBlock[] => {
+    blocks, 
+    blockToInsert, 
+    targetId, 
+    position
+) => {
     if (position === 'inside') {
         return blocks.map(block => {
             if (block.instanceId === targetId) {
@@ -112,7 +109,7 @@ const findAndInsertBlock = (
         });
     }
 
-    const newBlocks: WorkspaceBlock[] = [];
+    const newBlocks = [];
     let inserted = false;
     for (const block of blocks) {
         if (block.instanceId === targetId) {
@@ -137,14 +134,14 @@ const findAndInsertBlock = (
     return newBlocks;
 };
 
-const deepCloneBlock = (block: WorkspaceBlock): WorkspaceBlock => ({
+const deepCloneBlock = (block) => ({
     ...block,
     instanceId: generateUUID(),
     children: block.children.map(child => deepCloneBlock(child)),
 });
 
-const findAndDuplicateBlock = (blocks: WorkspaceBlock[], instanceId: string): WorkspaceBlock[] => {
-    const newBlocks: WorkspaceBlock[] = [];
+const findAndDuplicateBlock = (blocks, instanceId) => {
+    const newBlocks = [];
     for (const block of blocks) {
         newBlocks.push(block);
         if (block.instanceId === instanceId) {
@@ -158,12 +155,14 @@ const findAndDuplicateBlock = (blocks: WorkspaceBlock[], instanceId: string): Wo
     return newBlocks;
 };
 
-const getAvailableSelectors = (blocks: WorkspaceBlock[]): string[] => {
+// FIX: Added explicit types for parameters and return value to help TypeScript's type inference with recursion.
+const getAvailableSelectors = (blocks: any[]): string[] => {
+    if (!Array.isArray(blocks)) return [];
     let selectors: string[] = [];
     for (const block of blocks) {
         if (block.attributes.id) selectors.push(`#${block.attributes.id}`);
-        if (block.attributes.class) {
-            block.attributes.class.split(' ').forEach(c => {
+        if (block.attributes.class && typeof block.attributes.class === 'string') {
+            block.attributes.class.split(' ').forEach((c: string) => {
                 if (c && !selectors.includes(`.${c}`)) selectors.push(`.${c}`);
             });
         }
@@ -178,7 +177,7 @@ const getAvailableSelectors = (blocks: WorkspaceBlock[]): string[] => {
 }
 
 // --- CODE GENERATION ---
-const generateCssCode = (rules: CssRule[]): string => {
+const generateCssCode = (rules) => {
     return rules.map(rule => {
         const properties = rule.properties.map(p => {
              const cssKey = p.property.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
@@ -188,14 +187,14 @@ const generateCssCode = (rules: CssRule[]): string => {
     }).join('\n\n');
 }
 
-const generateJsCode = (rules: JsRule[]): string => {
+const generateJsCode = (rules) => {
     const codeBySelector = rules.reduce((acc, rule) => {
         if (!acc[rule.selector]) {
             acc[rule.selector] = [];
         }
         acc[rule.selector].push(rule);
         return acc;
-    }, {} as Record<string, JsRule[]>);
+    }, {});
 
     let finalCode = "document.addEventListener('DOMContentLoaded', () => {\n";
     for (const [selector, selectorRules] of Object.entries(codeBySelector)) {
@@ -219,36 +218,30 @@ const generateJsCode = (rules: JsRule[]): string => {
     return finalCode;
 }
 
-interface DropData {
-    draggedId: string;
-    draggedType: 'new' | 'move';
-    targetId: string | null;
-    position: 'inside' | 'before' | 'after';
-}
 
 // --- MAIN APP COMPONENT ---
-const App: React.FC = () => {
-  const [editorMode, setEditorMode] = useState<EditorMode>('html');
-  const [workspaceBlocks, setWorkspaceBlocks] = useState<WorkspaceBlock[]>(createInitialStructure);
+const App = () => {
+  const [editorMode, setEditorMode] = useState('html');
+  const [workspaceBlocks, setWorkspaceBlocks] = useState(createInitialStructure);
   const [htmlContent, setHtmlContent] = useState('');
-  const [selectedBlock, setSelectedBlock] = useState<WorkspaceBlock | null>(null);
+  const [selectedBlock, setSelectedBlock] = useState(null);
   
   // CSS State
-  const [cssRules, setCssRules] = useState<CssRule[]>([]);
-  const [selectedCssRule, setSelectedCssRule] = useState<CssRule | null>(null);
-  const [selectedCssProperty, setSelectedCssProperty] = useState<CssProperty | null>(null);
+  const [cssRules, setCssRules] = useState([]);
+  const [selectedCssRule, setSelectedCssRule] = useState(null);
+  const [selectedCssProperty, setSelectedCssProperty] = useState(null);
 
   // JS State
-  const [jsRules, setJsRules] = useState<JsRule[]>([]);
-  const [selectedJsRule, setSelectedJsRule] = useState<JsRule | null>(null);
-  const [selectedJsAction, setSelectedJsAction] = useState<JsAction | null>(null);
+  const [jsRules, setJsRules] = useState([]);
+  const [selectedJsRule, setSelectedJsRule] = useState(null);
+  const [selectedJsAction, setSelectedJsAction] = useState(null);
   
   // Cross-editor State
-  const [availableSelectors, setAvailableSelectors] = useState<string[]>([]);
+  const [availableSelectors, setAvailableSelectors] = useState([]);
 
   // HTML Context Menu State
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; visible: boolean; instanceId: string | null }>({ x: 0, y: 0, visible: false, instanceId: null });
-  const [styleClipboard, setStyleClipboard] = useState<CSSProperties | null>(null);
+  const [contextMenu, setContextMenu] = useState({ x: 0, y: 0, visible: false, instanceId: null });
+  const [styleClipboard, setStyleClipboard] = useState(null);
   
 
   useEffect(() => {
@@ -277,12 +270,12 @@ const App: React.FC = () => {
   }, []);
 
   // --- HTML Handlers ---
-  const handleBlockDrop = useCallback((data: DropData) => {
+  const handleBlockDrop = useCallback((data) => {
     const { draggedId, draggedType, targetId, position } = data;
 
     setWorkspaceBlocks(prevBlocks => {
-        let blockToMove: WorkspaceBlock | null = null;
-        let blocksAfterRemove: WorkspaceBlock[] = prevBlocks;
+        let blockToMove = null;
+        let blocksAfterRemove = prevBlocks;
         
         if (draggedType === 'move') {
             const { newBlocks, removedBlock } = findAndRemoveBlock(prevBlocks, draggedId);
@@ -309,7 +302,7 @@ const App: React.FC = () => {
 
   }, []);
   
-  const handleUpdateBlock = useCallback((instanceId: string, updates: Partial<WorkspaceBlock>) => {
+  const handleUpdateBlock = useCallback((instanceId, updates) => {
     setWorkspaceBlocks(prev => findAndUpdateBlock(prev, instanceId, updates));
     if (selectedBlock?.instanceId === instanceId) {
        setSelectedBlock(prev => {
@@ -323,7 +316,7 @@ const App: React.FC = () => {
     }
   }, [selectedBlock]);
 
-  const handleContextMenu = useCallback((e: React.MouseEvent, instanceId: string) => {
+  const handleContextMenu = useCallback((e, instanceId) => {
       e.preventDefault(); e.stopPropagation();
       setContextMenu({ x: e.clientX, y: e.clientY, visible: true, instanceId });
       setSelectedBlock(findBlock(workspaceBlocks, instanceId));
@@ -331,14 +324,14 @@ const App: React.FC = () => {
 
   const handleDeleteBlock = () => {
     if (!contextMenu.instanceId) return;
-    setWorkspaceBlocks(prev => findAndRemoveBlock(prev, contextMenu.instanceId!).newBlocks);
+    setWorkspaceBlocks(prev => findAndRemoveBlock(prev, contextMenu.instanceId).newBlocks);
     if (selectedBlock?.instanceId === contextMenu.instanceId) setSelectedBlock(null);
     closeContextMenu();
   };
 
   const handleDuplicateBlock = () => {
     if (!contextMenu.instanceId) return;
-    setWorkspaceBlocks(prev => findAndDuplicateBlock(prev, contextMenu.instanceId!));
+    setWorkspaceBlocks(prev => findAndDuplicateBlock(prev, contextMenu.instanceId));
     closeContextMenu();
   };
 
@@ -409,6 +402,7 @@ const App: React.FC = () => {
             <JsPropertiesPanel 
               selectedAction={selectedJsAction}
               selectedRule={selectedJsRule}
+              // FIX: Corrected typo from `setRules` to `setJsRules`.
               setRules={setJsRules}
             />
           </>

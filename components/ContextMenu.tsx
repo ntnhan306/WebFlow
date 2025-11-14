@@ -1,18 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-interface ContextMenuProps {
-  x: number;
-  y: number;
-  visible: boolean;
-  onDuplicate: () => void;
-  onDelete: () => void;
-  onCopyStyles: () => void;
-  onPasteStyles: () => void;
-  canPaste: boolean;
-  onClose: () => void;
-}
-
-const MenuItem: React.FC<{ onClick: () => void; children: React.ReactNode; disabled?: boolean }> = ({ onClick, children, disabled = false }) => (
+const MenuItem = ({ onClick, children, disabled = false }) => (
     <li
         onClick={disabled ? undefined : onClick}
         className={`flex items-center px-4 py-2 text-sm text-gray-700 cursor-pointer ${
@@ -25,14 +13,14 @@ const MenuItem: React.FC<{ onClick: () => void; children: React.ReactNode; disab
     </li>
 );
 
-const Icon: React.FC<{ path: string }> = ({ path }) => (
+const Icon = ({ path }) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-3">
         <path strokeLinecap="round" strokeLinejoin="round" d={path} />
     </svg>
 );
 
 
-const ContextMenu: React.FC<ContextMenuProps> = ({
+const ContextMenu = ({
   x,
   y,
   visible,
@@ -43,11 +31,11 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   canPaste,
   onClose,
 }) => {
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
         onClose();
       }
     };
