@@ -161,6 +161,7 @@ export const BLOCKS: Block[] = [
       events: {},
       children: [],
       generateHtml: function() {
+        // Content will be injected by the CSS editor
         return `<style>${this.content}</style>`;
       },
     }),
@@ -186,6 +187,7 @@ export const BLOCKS: Block[] = [
       events: {},
       children: [],
       generateHtml: function() {
+        // Content will be injected by the JS editor
         return `<script>${this.content}</script>`;
       },
     }),
