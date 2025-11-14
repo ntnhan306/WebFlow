@@ -1,5 +1,6 @@
 import type { CssBlock, CssProperty } from './types';
 import { CssBlockCategory } from './types';
+import { generateUUID } from './utils/uuid';
 
 export const CSS_BLOCKS: CssBlock[] = [
     // TYPOGRAPHY
@@ -8,7 +9,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Màu chữ',
         category: CssBlockCategory.TYPOGRAPHY,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'color',
             value: '#000000',
         }),
@@ -18,7 +19,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Cỡ chữ',
         category: CssBlockCategory.TYPOGRAPHY,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'fontSize',
             value: '16px',
         }),
@@ -28,7 +29,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Độ đậm chữ',
         category: CssBlockCategory.TYPOGRAPHY,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'fontWeight',
             value: 'normal',
         }),
@@ -39,7 +40,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Màu nền',
         category: CssBlockCategory.BACKGROUND,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'backgroundColor',
             value: '#ffffff',
         }),
@@ -49,7 +50,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Viền',
         category: CssBlockCategory.BACKGROUND,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'border',
             value: '1px solid #cccccc',
         }),
@@ -59,7 +60,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Bo góc viền',
         category: CssBlockCategory.BACKGROUND,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'borderRadius',
             value: '4px',
         }),
@@ -70,7 +71,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Đệm trong (Padding)',
         category: CssBlockCategory.SPACING,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'padding',
             value: '10px',
         }),
@@ -80,7 +81,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Canh lề (Margin)',
         category: CssBlockCategory.SPACING,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'margin',
             value: '10px',
         }),
@@ -91,7 +92,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Layout Flex',
         category: CssBlockCategory.LAYOUT,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'display',
             value: 'flex',
         }),
@@ -101,7 +102,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Hướng Flex',
         category: CssBlockCategory.LAYOUT,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'flexDirection',
             value: 'row',
         }),
@@ -111,7 +112,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Căn chỉnh ngang (Flex)',
         category: CssBlockCategory.LAYOUT,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'justifyContent',
             value: 'flex-start',
         }),
@@ -121,7 +122,7 @@ export const CSS_BLOCKS: CssBlock[] = [
         name: 'Căn chỉnh dọc (Flex)',
         category: CssBlockCategory.LAYOUT,
         template: (): CssProperty => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             property: 'alignItems',
             value: 'flex-start',
         }),

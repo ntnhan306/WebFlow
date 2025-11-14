@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { CssRule, CssProperty } from '../../types';
 import { CSS_BLOCKS } from '../../css-constants';
+import { generateUUID } from '../../utils/uuid';
 
 interface CssWorkspaceProps {
     rules: CssRule[];
@@ -20,7 +21,7 @@ const CssWorkspace: React.FC<CssWorkspaceProps> = ({
     const handleAddRule = () => {
         if (newSelector && !rules.find(r => r.selector === newSelector)) {
             const newRule: CssRule = {
-                instanceId: crypto.randomUUID(),
+                instanceId: generateUUID(),
                 selector: newSelector,
                 properties: [],
             };

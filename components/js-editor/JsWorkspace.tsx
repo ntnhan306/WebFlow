@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { JsRule, JsAction } from '../../types';
 import { JS_BLOCKS } from '../../js-constants';
+import { generateUUID } from '../../utils/uuid';
 
 interface JsWorkspaceProps {
     rules: JsRule[];
@@ -21,7 +22,7 @@ const JsWorkspace: React.FC<JsWorkspaceProps> = ({
     const handleAddRule = () => {
         if (newSelector) {
             const newRule: JsRule = {
-                instanceId: crypto.randomUUID(),
+                instanceId: generateUUID(),
                 selector: newSelector,
                 event: newEvent,
                 actions: [],

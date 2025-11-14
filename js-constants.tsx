@@ -1,5 +1,6 @@
 import type { JsBlock, JsAction } from './types';
 import { JsBlockCategory } from './types';
+import { generateUUID } from './utils/uuid';
 
 export const JS_BLOCKS: JsBlock[] = [
     // ACTIONS
@@ -8,7 +9,7 @@ export const JS_BLOCKS: JsBlock[] = [
         name: 'Hiển thị Cảnh báo',
         category: JsBlockCategory.ACTIONS,
         template: (): JsAction => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             actionId: 'alert',
             params: { message: 'Xin chào!' },
         }),
@@ -18,7 +19,7 @@ export const JS_BLOCKS: JsBlock[] = [
         name: 'Ghi ra Console',
         category: JsBlockCategory.ACTIONS,
         template: (): JsAction => ({
-            instanceId: crypto.randomUUID(),
+            instanceId: generateUUID(),
             actionId: 'console.log',
             params: { message: 'Dữ liệu log' },
         }),

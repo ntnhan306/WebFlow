@@ -14,6 +14,7 @@ import JsPropertiesPanel from './components/js-editor/JsPropertiesPanel';
 import type { WorkspaceBlock, EditorMode, CssRule, CssProperty, JsRule, JsAction } from './types';
 import { BLOCKS } from './constants';
 import type { CSSProperties } from 'react';
+import { generateUUID } from './utils/uuid';
 
 // --- INITIAL STRUCTURE ---
 const createInitialStructure = (): WorkspaceBlock[] => {
@@ -26,17 +27,17 @@ const createInitialStructure = (): WorkspaceBlock[] => {
 
     if (!htmlDef || !headDef || !bodyDef || !titleDef || !styleDef || !scriptDef) return [];
 
-    const titleBlock = titleDef.template(crypto.randomUUID());
-    const styleBlock = { ...styleDef.template(crypto.randomUUID()), isDynamic: true, content: '' };
-    const scriptBlock = { ...scriptDef.template(crypto.randomUUID()), isDynamic: true, content: '' };
+    const titleBlock = titleDef.template(generateUUID());
+    const styleBlock = { ...styleDef.template(generateUUID()), isDynamic: true, content: '' };
+    const scriptBlock = { ...scriptDef.template(generateUUID()), isDynamic: true, content: '' };
     
-    const headBlock = headDef.template(crypto.randomUUID());
+    const headBlock = headDef.template(generateUUID());
     headBlock.children.push(titleBlock, styleBlock);
     
-    const bodyBlock = bodyDef.template(crypto.randomUUID());
+    const bodyBlock = bodyDef.template(generateUUID());
     bodyBlock.children.push(scriptBlock);
 
-    const htmlBlock = htmlDef.template(crypto.randomUUID());
+    const htmlBlock = htmlDef.template(generateUUID());
     htmlBlock.children = [headBlock, bodyBlock];
 
     return [htmlBlock];
@@ -138,7 +139,7 @@ const findAndInsertBlock = (
 
 const deepCloneBlock = (block: WorkspaceBlock): WorkspaceBlock => ({
     ...block,
-    instanceId: crypto.randomUUID(),
+    instanceId: generateUUID(),
     children: block.children.map(child => deepCloneBlock(child)),
 });
 
@@ -291,7 +292,7 @@ const App: React.FC = () => {
         } else { // 'new'
             const blockDef = BLOCKS.find(b => b.id === draggedId);
             if (!blockDef) return prevBlocks;
-            blockToMove = blockDef.template(crypto.randomUUID());
+            blockToMove = blockDef.template(generateUUID());
         }
 
         if (!blockToMove) return prevBlocks;
