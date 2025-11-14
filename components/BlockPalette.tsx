@@ -20,13 +20,14 @@ const DraggableBlock: React.FC<{ block: Block }> = ({ block }) => {
 };
 
 const CATEGORY_COLORS: Record<BlockCategory, { bg: string; border: string; text: string; }> = {
-  [BlockCategory.DOCUMENT]: { bg: 'bg-slate-100', border: 'border-slate-200', text: 'text-slate-800' },
+  [BlockCategory.DOCUMENT]: { bg: 'bg-blue-100', border: 'border-blue-200', text: 'text-blue-800' },
   [BlockCategory.STRUCTURE]: { bg: 'bg-blue-100', border: 'border-blue-200', text: 'text-blue-800' },
   [BlockCategory.TYPOGRAPHY]: { bg: 'bg-sky-100', border: 'border-sky-200', text: 'text-sky-800' },
   [BlockCategory.NAVIGATION]: { bg: 'bg-pink-100', border: 'border-pink-200', text: 'text-pink-800' },
   [BlockCategory.MEDIA]: { bg: 'bg-emerald-100', border: 'border-emerald-200', text: 'text-emerald-800' },
   [BlockCategory.FORM]: { bg: 'bg-orange-100', border: 'border-orange-200', text: 'text-orange-800' },
   [BlockCategory.LISTS]: { bg: 'bg-teal-100', border: 'border-teal-200', text: 'text-teal-800' },
+  [BlockCategory.TABLES]: { bg: 'bg-amber-100', border: 'border-amber-200', text: 'text-amber-800' },
   [BlockCategory.UTILITY]: { bg: 'bg-purple-100', border: 'border-purple-200', text: 'text-purple-800' },
 };
 

@@ -13,6 +13,7 @@ export enum BlockCategory {
   FORM = 'Biểu Mẫu',
   NAVIGATION = 'Điều Hướng',
   LISTS = 'Danh Sách',
+  TABLES = 'Bảng Biểu',
   UTILITY = 'Tiện Ích',
 }
 

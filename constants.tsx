@@ -55,7 +55,12 @@ export const BLOCKS: Block[] = [
     name: 'Tài liệu HTML',
     category: BlockCategory.DOCUMENT,
     type: BlockType.CONTAINER,
-    component: () => <div className="hidden"></div>,
+    component: () => (
+      <div className="w-full bg-white text-gray-800 p-2 rounded-md text-sm font-medium border border-gray-300 shadow-sm">
+        Tài liệu HTML
+        <div className="text-xs font-normal text-gray-500">html</div>
+      </div>
+    ),
     template: (instanceId: string): WorkspaceBlock => ({
       instanceId,
       blockId: 'html',
@@ -76,7 +81,12 @@ export const BLOCKS: Block[] = [
     name: 'Phần Head',
     category: BlockCategory.DOCUMENT,
     type: BlockType.CONTAINER,
-    component: () => <div className="hidden"></div>,
+    component: () => (
+      <div className="w-full bg-white text-gray-800 p-2 rounded-md text-sm font-medium border border-gray-300 shadow-sm">
+        Phần Head
+        <div className="text-xs font-normal text-gray-500">head</div>
+      </div>
+    ),
     template: (instanceId: string): WorkspaceBlock => ({
       instanceId,
       blockId: 'head',
@@ -97,7 +107,12 @@ export const BLOCKS: Block[] = [
     name: 'Phần Body',
     category: BlockCategory.DOCUMENT,
     type: BlockType.CONTAINER,
-    component: () => <div className="hidden"></div>,
+    component: () => (
+      <div className="w-full bg-white text-gray-800 p-2 rounded-md text-sm font-medium border border-gray-300 shadow-sm">
+        Phần Body
+        <div className="text-xs font-normal text-gray-500">body</div>
+      </div>
+    ),
     template: (instanceId: string): WorkspaceBlock => ({
       instanceId,
       blockId: 'body',
@@ -119,9 +134,9 @@ export const BLOCKS: Block[] = [
     category: BlockCategory.DOCUMENT,
     type: BlockType.LEAF,
      component: () => (
-      <div className="w-full bg-gray-500 text-white p-2 rounded-md text-sm font-medium">
+      <div className="w-full bg-white text-gray-800 p-2 rounded-md text-sm font-medium border border-gray-300 shadow-sm">
         Tiêu đề
-        <div className="text-xs font-normal opacity-70">title</div>
+        <div className="text-xs font-normal text-gray-500">title</div>
       </div>
     ),
     template: (instanceId: string): WorkspaceBlock => ({
@@ -324,6 +339,58 @@ export const BLOCKS: Block[] = [
       },
     }),
   },
+  {
+    id: 'article',
+    name: 'Bài viết (article)',
+    category: BlockCategory.STRUCTURE,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-indigo-400 text-white p-2 rounded-md text-sm font-medium">
+        Bài viết
+        <div className="text-xs font-normal opacity-70">article</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'article',
+      name: 'Bài viết (article)',
+      content: '',
+      attributes: { class: 'p-4 border-b', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<article ${generateFullAttributesString(this)}>${childrenHtml}</article>`;
+      },
+    }),
+  },
+  {
+    id: 'aside',
+    name: 'Nội dung phụ (aside)',
+    category: BlockCategory.STRUCTURE,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-indigo-400 text-white p-2 rounded-md text-sm font-medium">
+        Nội dung phụ
+        <div className="text-xs font-normal opacity-70">aside</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'aside',
+      name: 'Nội dung phụ (aside)',
+      content: '',
+      attributes: { class: 'p-4 bg-gray-50', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<aside ${generateFullAttributesString(this)}>${childrenHtml}</aside>`;
+      },
+    }),
+  },
 
   // TYPOGRAPHY BLOCKS
   {
@@ -477,6 +544,57 @@ export const BLOCKS: Block[] = [
     }),
   },
   {
+    id: 'em',
+    name: 'In nghiêng',
+    category: BlockCategory.TYPOGRAPHY,
+    type: BlockType.LEAF,
+    component: () => (
+      <div className="w-full bg-sky-400 text-white p-2 rounded-md text-sm font-medium">
+        In nghiêng
+        <div className="text-xs font-normal opacity-70">em</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'em',
+      name: 'In nghiêng',
+      content: 'Văn bản nhấn mạnh',
+      attributes: { class: '', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        return `<em ${generateFullAttributesString(this)}>${escapeHtml(this.content)}</em>`;
+      },
+    }),
+  },
+  {
+    id: 'blockquote',
+    name: 'Trích dẫn',
+    category: BlockCategory.TYPOGRAPHY,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-sky-400 text-white p-2 rounded-md text-sm font-medium">
+        Trích dẫn
+        <div className="text-xs font-normal opacity-70">blockquote</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'blockquote',
+      name: 'Trích dẫn',
+      content: '',
+      attributes: { class: 'p-4 my-4 border-l-4 border-gray-300 bg-gray-50', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<blockquote ${generateFullAttributesString(this)}>${childrenHtml}</blockquote>`;
+      },
+    }),
+  },
+  {
     id: 'hr',
     name: 'Đường kẻ ngang',
     category: BlockCategory.TYPOGRAPHY,
@@ -551,6 +669,56 @@ export const BLOCKS: Block[] = [
       children: [],
       generateHtml: function() {
         return `<img ${generateFullAttributesString(this)} />`;
+      },
+    }),
+  },
+  {
+    id: 'video',
+    name: 'Video',
+    category: BlockCategory.MEDIA,
+    type: BlockType.LEAF,
+    component: () => (
+      <div className="w-full bg-emerald-500 text-white p-2 rounded-md text-sm font-medium">
+        Video
+        <div className="text-xs font-normal opacity-70">video</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'video',
+      name: 'Video',
+      content: '',
+      attributes: { src: '', controls: 'true', class: 'w-full', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        return `<video ${generateFullAttributesString(this)}></video>`;
+      },
+    }),
+  },
+  {
+    id: 'audio',
+    name: 'Audio',
+    category: BlockCategory.MEDIA,
+    type: BlockType.LEAF,
+    component: () => (
+      <div className="w-full bg-emerald-500 text-white p-2 rounded-md text-sm font-medium">
+        Audio
+        <div className="text-xs font-normal opacity-70">audio</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'audio',
+      name: 'Audio',
+      content: '',
+      attributes: { src: '', controls: 'true', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        return `<audio ${generateFullAttributesString(this)}></audio>`;
       },
     }),
   },
@@ -681,6 +849,57 @@ export const BLOCKS: Block[] = [
       },
     }),
   },
+  {
+    id: 'fieldset',
+    name: 'Nhóm trường (fieldset)',
+    category: BlockCategory.FORM,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-orange-400 text-white p-2 rounded-md text-sm font-medium">
+        Nhóm trường
+        <div className="text-xs font-normal opacity-70">fieldset</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'fieldset',
+      name: 'Nhóm trường (fieldset)',
+      content: '',
+      attributes: { class: 'border border-gray-300 p-4 rounded-md', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<fieldset ${generateFullAttributesString(this)}>${childrenHtml}</fieldset>`;
+      },
+    }),
+  },
+  {
+    id: 'legend',
+    name: 'Tiêu đề nhóm (legend)',
+    category: BlockCategory.FORM,
+    type: BlockType.LEAF,
+    component: () => (
+      <div className="w-full bg-orange-400 text-white p-2 rounded-md text-sm font-medium">
+        Tiêu đề nhóm
+        <div className="text-xs font-normal opacity-70">legend</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'legend',
+      name: 'Tiêu đề nhóm (legend)',
+      content: 'Tiêu đề',
+      attributes: { class: 'px-2 font-semibold', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        return `<legend ${generateFullAttributesString(this)}>${escapeHtml(this.content)}</legend>`;
+      },
+    }),
+  },
   // LISTS
   {
     id: 'ul',
@@ -756,6 +975,161 @@ export const BLOCKS: Block[] = [
       children: [],
       generateHtml: function() {
         return `<li ${generateFullAttributesString(this)}>${escapeHtml(this.content)}</li>`;
+      },
+    }),
+  },
+  // TABLES
+  {
+    id: 'table',
+    name: 'Bảng',
+    category: BlockCategory.TABLES,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-amber-500 text-white p-2 rounded-md text-sm font-medium">
+        Bảng
+        <div className="text-xs font-normal opacity-70">table</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'table',
+      name: 'Bảng',
+      content: '',
+      attributes: { class: 'w-full border-collapse', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<table ${generateFullAttributesString(this)}>${childrenHtml}</table>`;
+      },
+    }),
+  },
+  {
+    id: 'thead',
+    name: 'Đầu bảng',
+    category: BlockCategory.TABLES,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-amber-400 text-white p-2 rounded-md text-sm font-medium">
+        Đầu bảng
+        <div className="text-xs font-normal opacity-70">thead</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'thead',
+      name: 'Đầu bảng',
+      content: '',
+      attributes: { class: 'bg-gray-200', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<thead ${generateFullAttributesString(this)}>${childrenHtml}</thead>`;
+      },
+    }),
+  },
+  {
+    id: 'tbody',
+    name: 'Thân bảng',
+    category: BlockCategory.TABLES,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-amber-400 text-white p-2 rounded-md text-sm font-medium">
+        Thân bảng
+        <div className="text-xs font-normal opacity-70">tbody</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'tbody',
+      name: 'Thân bảng',
+      content: '',
+      attributes: { class: '', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<tbody ${generateFullAttributesString(this)}>${childrenHtml}</tbody>`;
+      },
+    }),
+  },
+  {
+    id: 'tr',
+    name: 'Hàng',
+    category: BlockCategory.TABLES,
+    type: BlockType.CONTAINER,
+    component: () => (
+      <div className="w-full bg-amber-400 text-white p-2 rounded-md text-sm font-medium">
+        Hàng
+        <div className="text-xs font-normal opacity-70">tr</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'tr',
+      name: 'Hàng',
+      content: '',
+      attributes: { class: 'border-b', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        const childrenHtml = this.children.map(child => child.generateHtml()).join('\n');
+        return `<tr ${generateFullAttributesString(this)}>${childrenHtml}</tr>`;
+      },
+    }),
+  },
+  {
+    id: 'th',
+    name: 'Ô tiêu đề',
+    category: BlockCategory.TABLES,
+    type: BlockType.LEAF,
+    component: () => (
+      <div className="w-full bg-amber-300 text-white p-2 rounded-md text-sm font-medium">
+        Ô tiêu đề
+        <div className="text-xs font-normal opacity-70">th</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'th',
+      name: 'Ô tiêu đề',
+      content: 'Tiêu đề',
+      attributes: { class: 'p-2 text-left font-bold', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        return `<th ${generateFullAttributesString(this)}>${escapeHtml(this.content)}</th>`;
+      },
+    }),
+  },
+  {
+    id: 'td',
+    name: 'Ô dữ liệu',
+    category: BlockCategory.TABLES,
+    type: BlockType.LEAF,
+    component: () => (
+      <div className="w-full bg-amber-300 text-white p-2 rounded-md text-sm font-medium">
+        Ô dữ liệu
+        <div className="text-xs font-normal opacity-70">td</div>
+      </div>
+    ),
+    template: (instanceId: string): WorkspaceBlock => ({
+      instanceId,
+      blockId: 'td',
+      name: 'Ô dữ liệu',
+      content: 'Dữ liệu',
+      attributes: { class: 'p-2', id: '' },
+      styles: {},
+      events: {},
+      children: [],
+      generateHtml: function() {
+        return `<td ${generateFullAttributesString(this)}>${escapeHtml(this.content)}</td>`;
       },
     }),
   },
